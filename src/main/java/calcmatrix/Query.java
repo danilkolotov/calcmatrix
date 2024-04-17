@@ -27,7 +27,7 @@ public class Query {
     @Enumerated(EnumType.ORDINAL)
     private Operation operation;
 
-    private int power = 0;
+    private Integer power;
 
     @ElementCollection
     private List<Double> powerResult;

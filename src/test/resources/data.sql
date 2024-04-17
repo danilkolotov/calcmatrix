@@ -1,0 +1,1 @@
+insert into query(id, n, operation) values (1228, 2, 0);
