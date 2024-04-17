@@ -3,10 +3,8 @@ package calcmatrix;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Getter
