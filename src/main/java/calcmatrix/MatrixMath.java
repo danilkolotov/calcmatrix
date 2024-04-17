@@ -32,7 +32,7 @@ public class MatrixMath {
             for (int j = i + 1; j < n; j++) {
                 double mult = -triangle.get(j).get(i) / triangle.get(i).get(i);
                 for (int k = i; k < n; k++) {
-                    triangle.get(j).set(k, triangle.get(j).get(k) + mult * triangle.get(i).get(j));
+                    triangle.get(j).set(k, triangle.get(j).get(k) + mult * triangle.get(i).get(k));
                 }
             }
         }
