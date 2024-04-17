@@ -1,10 +1,16 @@
 package calcmatrix;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
+@Getter
+@Setter
 public class Query {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,47 +19,20 @@ public class Query {
     @ElementCollection
     private List<Double> matrix;
 
-    private int n, m;
+    private int n;
+
+    public enum Operation {
+        DET,
+        PWR
+    }
+
+    @Enumerated(EnumType.ORDINAL)
+    private Operation operation;
+
+    private int power = 0;
+
+    @ElementCollection
+    private List<Double> powerResult;
 
     private Double result;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<Double> getMatrix() {
-        return matrix;
-    }
-
-    public void setMatrix(List<Double> matrix) {
-        this.matrix = matrix;
-    }
-
-    public int getN() {
-        return n;
-    }
-
-    public void setN(int n) {
-        this.n = n;
-    }
-
-    public int getM() {
-        return m;
-    }
-
-    public void setM(int m) {
-        this.m = m;
-    }
-
-    public Double getResult() {
-        return result;
-    }
-
-    public void setResult(Double result) {
-        this.result = result;
-    }
 }
