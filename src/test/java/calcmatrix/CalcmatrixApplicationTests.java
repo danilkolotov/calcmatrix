@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -18,11 +21,11 @@ class CalcmatrixApplicationTests {
     
     @Test
     void getExistingTest() {
-        ResponseEntity<Query> response = restTemplate.getForEntity("/get/1228", Query.class);
+        ResponseEntity<Query> response = restTemplate.getForEntity("/get/2", Query.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         Query result = response.getBody();
 
-        assertEquals(1228, result.getId());
+        assertEquals(2, result.getId());
         assertEquals(2, result.getN());
     }
 
@@ -30,5 +33,18 @@ class CalcmatrixApplicationTests {
     void notFoundTest() {
         ResponseEntity<Query> response = restTemplate.getForEntity("/get/0", Query.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void postTest() {
+        Query query = new Query();
+        query.setMatrix(List.of(1.0));
+        query.setOperation(Query.Operation.DET);
+        query.setN(1);
+        ResponseEntity<Query> response = restTemplate.postForEntity("/new", query, Query.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        Query got = response.getBody();
+        assertIterableEquals(query.getMatrix(), got.getMatrix());
+        assertEquals(query.getOperation(), got.getOperation());
     }
 }

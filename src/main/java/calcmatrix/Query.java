@@ -1,14 +1,14 @@
 package calcmatrix;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class Query {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
