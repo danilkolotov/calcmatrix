@@ -25,4 +25,10 @@ class CalcmatrixApplicationTests {
         assertEquals(1228, result.getId());
         assertEquals(2, result.getN());
     }
+
+    @Test
+    void notFoundTest() {
+        ResponseEntity<Query> response = restTemplate.getForEntity("/get/0", Query.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
 }
