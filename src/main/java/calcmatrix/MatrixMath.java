@@ -23,17 +23,22 @@ public class MatrixMath {
     }
 
     private static double determinantImpl(List<List<Double>> matrix) {
-        if (matrix.size() == 1) {
-            return matrix.get(0).get(0);
+        List<List<Double>> triangle = new ArrayList<>();
+        for (List<Double> row : matrix) {
+            triangle.add(new ArrayList<>(row));
         }
-        double result = 0;
-        for (int i = 0; i < matrix.size(); i++) {
-            List<List<Double>> current = new ArrayList<>();
-            for (int j = 0; j < matrix.size(); j++) {
-                if (i == j) continue;
-                current.add(matrix.get(j).subList(1, matrix.size()));
+        int n = matrix.size();
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                double mult = -triangle.get(j).get(i) / triangle.get(i).get(i);
+                for (int k = i; k < n; k++) {
+                    triangle.get(j).set(k, triangle.get(j).get(k) + mult * triangle.get(i).get(j));
+                }
             }
-            result += matrix.get(i).get(0) * determinantImpl(current);
+        }
+        double result = 1;
+        for (int i = 0; i < n; i++) {
+            result *= triangle.get(i).get(i);
         }
         return result;
     }
