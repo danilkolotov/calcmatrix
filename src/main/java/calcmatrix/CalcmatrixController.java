@@ -20,7 +20,8 @@ public class CalcmatrixController {
 
     @PostMapping(path = "/new")
     private @ResponseBody ResponseEntity<Void> newQuery(@RequestBody Query query, UriComponentsBuilder ucb) {
-        if (query.getOperation() == null) {
+        if (query.getOperation() == null ||
+                Optional.ofNullable(query.getId()).map(id -> repository.existsById(id)).orElse(false)) {
             return ResponseEntity.badRequest().build();
         }
         try {
