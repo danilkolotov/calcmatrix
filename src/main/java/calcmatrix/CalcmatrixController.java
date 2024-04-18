@@ -44,9 +44,9 @@ public class CalcmatrixController {
         ).build();
     }
 
-    @GetMapping(path = "/getall")
-    private @ResponseBody Iterable<Query> getAll() {
-        return repository.findAll();
+    @GetMapping()
+    private @ResponseBody ResponseEntity<Iterable<Query>> getAll() {
+        return ResponseEntity.ok(repository.findAll());
     }
 
     @GetMapping(path = "/get/{id}")

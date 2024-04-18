@@ -39,7 +39,7 @@ class CalcmatrixApplicationTests {
 
     @Test
     void getAllTest() throws Exception {
-        mockMvc.perform(get("/getall"))
+        mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(
@@ -68,7 +68,7 @@ class CalcmatrixApplicationTests {
                 .andExpect(jsonPath("$.result").value(-2))
                 .andExpect(jsonPath("$.matrix").isArray())
                 .andExpect(jsonPath("$.matrix").value(contains(1.0, 2.0, 3.0, 4.0)));
-        mockMvc.perform(get("/getall"))
+        mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4));
     }
