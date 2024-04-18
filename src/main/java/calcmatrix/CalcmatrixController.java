@@ -31,8 +31,6 @@ public class CalcmatrixController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
-//        return ResponseEntity.created(
-//                repository.save(query).getId());
         return ResponseEntity.created(ucb
                 .path("/get/{id}")
                 .buildAndExpand(repository.save(query).getId())
