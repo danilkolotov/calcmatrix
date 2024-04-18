@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CalcMatrix</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        label, input {
+            display: block;
+        }
+        label {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body onload="initHistory()">
+    <h1>CalcMatrix</h1>
+    <h3>New query</h3>
+    <form action="javascript:makeQuery()" id = "form">
+        <label for="matrix">
+            Enter matrix e.g. [1.0, 2.0, 3.0, 4.0]
+            <input id="matrix" type="text"/>
+        </label>
+        <label for="operations">
+            Choose operation
+            <select id="operations" name="operations" onchange="togglePowerInput()">
+                <option value="DET">Determinant</option>
+                <option value="PWR">Power</option>
+            </select>
+        </label>
+        <div id="power-label" style="display: none">
+            <label>
+                Enter power
+                <input id="power" type="text"/>
+            </label>
+        </div>
+
+        <button type="submit">Make query</button>
+    </form>
+
+    <h3>History</h3>
+    <div id="history">
+    </div>
+</body>
+
+<script type="text/javascript">
+    let count = 0;
+
+    async function initHistory(){
+        let queries = await (await fetch('http://localhost:8080/getall')).json();
+        let div = document.getElementById("history");
+        for (let i = queries.length - 1; i >= 0; i--) {
+            div.innerHTML += renderQuery(queries[i], i);
+        }
+        count = queries.length;
+    }
+
+    async function makeQuery() {
+        let matrix;
+        try {
+            matrix = JSON.parse(document.getElementById("matrix").value);
+        } catch (error) {
+            alert("Not valid matrix");
+            return;
+        }
+        matrix = matrix.map(parseFloat);
+        if (matrix.some(isNaN)) {
+            alert("Not valid matrix, should contain only numbers");
+            return;
+        }
+        let n = Math.sqrt(matrix.length);
+        if (n * n !== matrix.length) {
+            alert("Not valid matrix, should be square");
+            return;
+        }
+        let power = 0;
+        let operation = document.getElementById("operations").value;
+        if (operation === "PWR") {
+            power = parseInt(document.getElementById("power").value);
+            if (isNaN(power) || power < 0) {
+                alert("Not valid power, should be integer >= 0");
+                return;
+            }
+        }
+        let res = await fetch("http://localhost:8080/new",
+            {
+                headers: { "Content-Type": "application/json" },
+                method: "post",
+                body: JSON.stringify({
+                    matrix: matrix,
+                    n: n,
+                    operation: operation,
+                    power: power
+                })
+            }
+        );
+
+        let created = await (await fetch(res.headers.get("Location"))).json();
+        let hist = document.getElementById("history");
+        hist.innerHTML = renderQuery(created, count++) + hist.innerHTML;
+    }
+
+    function togglePowerInput() {
+        document.getElementById("power-label").style.display =
+            document.getElementById("operations").value === "PWR" ? "block" : "none";
+    }
+
+    function renderQuery(query, index) {
+        if (query["operation"] === "DET") {
+            return `
+                <div style='background-color: ${index % 2 === 0 ? "darkgrey" : "white"}'>
+                    <h4>Query ${index + 1}</h4>
+                    <p>Determinant of</p>
+                    ${getTable(query["matrix"], query["n"])}
+                    <p>is ${query["result"]}</p>
+                </div>
+                `
+        } else {
+            return `
+                <div style='background-color: ${index % 2 === 0 ? "darkgrey" : "white"}'>
+                    <h4>Query ${index + 1}</h4>
+                    <p>${query["power"]} power of</p>
+                    ${getTable(query["matrix"], query["n"])}
+                    <p>is</p>
+                    ${getTable(query["powerResult"], query["n"])}
+                </div>
+                `
+        }
+    }
+
+    function getTable(matrix, n) {
+        let res = "";
+        res += "<table>"
+        for (let i = 0; i < n; i++) {
+            res += "<tr>"
+            for (let j = 0; j < n; j++) {
+                res += `<td>${matrix[i * n + j]}</td>`;
+            }
+            res += "</tr>"
+        }
+        res += "</table>";
+        return res;
+    }
+</script>
+</html>
