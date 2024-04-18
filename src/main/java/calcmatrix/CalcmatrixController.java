@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class CalcmatrixController {
     private QueryRepository repository;
 
     @PostMapping(path = "/new")
-    private @ResponseBody ResponseEntity<Long> newQuery(@RequestBody Query query) {
+    private @ResponseBody ResponseEntity<Void> newQuery(@RequestBody Query query, UriComponentsBuilder ucb) {
         if (query.getOperation() == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -30,7 +31,13 @@ public class CalcmatrixController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(repository.save(query).getId());
+//        return ResponseEntity.created(
+//                repository.save(query).getId());
+        return ResponseEntity.created(ucb
+                .path("/get/{id}")
+                .buildAndExpand(repository.save(query).getId())
+                .toUri()
+        ).build();
     }
 
     @GetMapping(path = "/getall")
