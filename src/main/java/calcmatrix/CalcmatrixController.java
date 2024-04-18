@@ -18,7 +18,7 @@ public class CalcmatrixController {
     private QueryRepository repository;
 
     @PostMapping(path = "/new")
-    private @ResponseBody ResponseEntity<Query> newQuery(@RequestBody Query query) {
+    private @ResponseBody ResponseEntity<Long> newQuery(@RequestBody Query query) {
         if (query.getOperation() == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -30,8 +30,7 @@ public class CalcmatrixController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
-        repository.save(query);
-        return ResponseEntity.ok(query);
+        return ResponseEntity.ok(repository.save(query).getId());
     }
 
     @GetMapping(path = "/getall")

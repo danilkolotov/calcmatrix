@@ -41,10 +41,13 @@ class CalcmatrixApplicationTests {
         query.setMatrix(List.of(1.0));
         query.setOperation(Query.Operation.DET);
         query.setN(1);
-        ResponseEntity<Query> response = restTemplate.postForEntity("/new", query, Query.class);
+        ResponseEntity<Long> response = restTemplate.postForEntity("/new", query, Long.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        Query got = response.getBody();
+        ResponseEntity<Query> created = restTemplate.getForEntity("/get/" + response.getBody(), Query.class);
+        assertEquals(HttpStatus.OK, created.getStatusCode());
+        Query got = created.getBody();
         assertIterableEquals(query.getMatrix(), got.getMatrix());
         assertEquals(query.getOperation(), got.getOperation());
+        assertEquals(1.0, got.getResult());
     }
 }
