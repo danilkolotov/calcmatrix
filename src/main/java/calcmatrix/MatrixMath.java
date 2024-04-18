@@ -45,8 +45,7 @@ public class MatrixMath {
 
     public static List<Double> power(Query query) {
         List<Double> matrix = query.getMatrix();
-        int n = query.getN();
-        return powerImpl(toSquare(matrix, n), query.getPower()).stream().flatMap(Collection::stream).toList();
+        return powerImpl(toSquare(matrix, query.getN()), query.getPower()).stream().flatMap(Collection::stream).toList();
     }
 
     private static List<List<Double>> powerImpl(List<List<Double>> matrix, int power) {
@@ -85,11 +84,7 @@ public class MatrixMath {
         for (int i = 0; i < n; i++) {
             List<Double> current = new ArrayList<>();
             for (int j = 0; j < n; j++) {
-                if (i == j) {
-                    current.add(1.0);
-                } else {
-                    current.add(0.0);
-                }
+                current.add(i == j ? 1.0 : 0.0);
             }
             result.add(current);
         }
