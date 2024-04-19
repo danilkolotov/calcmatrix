@@ -51,7 +51,7 @@
     let count = 0;
 
     async function initHistory(){
-        let queries = await (await fetch('http://localhost:8080/getall')).json();
+        let queries = await (await fetch('http://localhost:8080/')).json();
         let div = document.getElementById("history");
         for (let i = queries.length - 1; i >= 0; i--) {
             div.innerHTML += renderQuery(queries[i], i);
